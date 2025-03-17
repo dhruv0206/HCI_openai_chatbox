@@ -16,11 +16,12 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "OpenAI API key not configured" });
     }
 
-    // Initialize the OpenAI client with the current SDK syntax
+    // Initialize the OpenAI client
     const openai = new OpenAI({ apiKey });
 
+    // Use gpt-3.5-turbo which is more widely available
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo", // Changed from "gpt-4" to a more accessible model
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         { role: "user", content: message },
