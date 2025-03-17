@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -16,7 +16,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "OpenAI API key not configured" });
     }
 
-    const openai = new OpenAIApi(new Configuration({ apiKey }));
+    // Initialize the OpenAI client with the current SDK syntax
+    const openai = new OpenAI({ apiKey });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
@@ -31,6 +32,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ response });
   } catch (error) {
     console.error("Error calling OpenAI API:", error);
-    return res.status(500).json({ error: "Error processing request" });
+    return res.status(500).json({
+      error: "Error processing request",
+      details: error.message,
+    });
   }
 }
