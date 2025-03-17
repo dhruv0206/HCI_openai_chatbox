@@ -4,7 +4,7 @@ function Header() {
   return (
     <header className="header">
       <h1>AI Chat Assistant</h1>
-      <p>Powered by OpenAI</p>
+      <p>Powered by Groq AI</p>
     </header>
   );
 }
