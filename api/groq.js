@@ -10,9 +10,12 @@ export default async function handler(req, res) {
   try {
     // Get the messages from the request body
     const { messages } = req.body;
+    console.log("MESS", messages);
 
     // Access Groq API key from environment variables
     const apiKey = process.env.GROQ_API_KEY;
+
+    console.log("API", apiKey);
 
     // If no API key is found, return a helpful error message
     if (!apiKey) {
@@ -38,8 +41,12 @@ export default async function handler(req, res) {
       api_key: apiKey,
     });
 
+    console.log("STREAM", stream);
+
     // Return a streaming response
-    return new StreamingTextResponse(stream);
+    const streamRes = new StreamingTextResponse(stream);
+    console.log("STREAM RES", streamRes);
+    return streamRes;
   } catch (error) {
     console.error("Error calling Groq API:", error);
 
