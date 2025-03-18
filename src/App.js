@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { useChat } from "ai/react";
 import "./App.css";
 import Header from "./components/Header";
+import { useChat } from "@ai-sdk/react";
 
 function App() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      api: "/api/groq",
-    });
+  // const { messages, input, handleInputChange, handleSubmit, isLoading } =
+  //   useChat({
+  //     api: "/api/groq",
+  //   });
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: "/api/groq",
+  });
 
   return (
     <div className="App">
@@ -39,15 +42,16 @@ function App() {
               value={input}
               onChange={handleInputChange}
               placeholder="Type your message..."
-              disabled={isLoading}
+              // disabled={isLoading}
               className="message-input"
             />
             <button
               type="submit"
-              disabled={isLoading || !input.trim()}
+              // disabled={isLoading || !input.trim()}
               className="send-button"
             >
-              {isLoading ? "Sending..." : "Send"}
+              {/* {isLoading ? "Sending..." : "Send"} */}
+              Send
             </button>
           </form>
         </div>
