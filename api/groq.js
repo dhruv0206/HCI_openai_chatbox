@@ -1,75 +1,29 @@
-// // api/groq.js - Corrected implementation using Groq SDK
-// import { groq } from "@ai-sdk/groq";
-// import { StreamingTextResponse } from "ai";
-
-// export default async function handler(req, res) {
-//   if (req.method !== "POST") {
-//     return res.status(405).json({ error: "Method not allowed" });
-//   }
-
-//   try {
-//     // Get the messages from the request body
-//     const { messages } = req.body;
-//     console.log("MESS", messages);
-
-//     // Access Groq API key from environment variables
-//     const apiKey = process.env.GROQ_API_KEY;
-
-//     console.log("API", apiKey);
-
-//     // If no API key is found, return a helpful error message
-//     if (!apiKey) {
-//       console.error("Missing GROQ_API_KEY environment variable");
-//       return res.status(500).json({
-//         error: "API configuration issue",
-//         message:
-//           "Groq API key not configured. Please add GROQ_API_KEY to your environment variables.",
-//       });
-//     }
-
-//     // Format messages correctly
-//     const formattedMessages = messages.map((m) => ({
-//       role: m.role,
-//       content: m.content,
-//     }));
-
-//     // Create a stream using the correct Groq SDK syntax
-//     const stream = await groq.chat.completions.create({
-//       model: "llama3-8b-8192",
-//       messages: formattedMessages,
-//       stream: true,
-//       api_key: apiKey,
-//     });
-
-//     console.log("STREAM", stream);
-
-//     // Return a streaming response
-//     const streamRes = new StreamingTextResponse(stream);
-//     console.log("STREAM RES", streamRes);
-//     return streamRes;
-//   } catch (error) {
-//     console.error("Error calling Groq API:", error);
-
-//     return res.status(500).json({
-//       error: "Error processing request",
-//       details: error.message,
-//     });
-//   }
-// }
-
+// Import the groq function for model selection and streamText for handling AI responses
 import { groq } from "@ai-sdk/groq";
-import { generateText, streamText } from "ai";
+import { streamText } from "ai";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+/**
+ * Handles POST requests to the API.
+ *
+ * This function processes incoming messages, streams a response from the AI model,
+ * and returns the response as a data stream.
+ *
+ * @param {Request} req - The incoming HTTP request object.
+ * @returns {Promise<Response>} - The streamed response from the AI model.
+ */
 export async function POST(req) {
+  // Parse the JSON body to extract the messages
   const { messages } = await req.json();
 
+  // Stream a response from the AI model using the specified groq model
   const result = streamText({
     model: groq("llama-3.3-70b-versatile"),
     messages,
   });
 
+  // Return the streamed response
   return result.toDataStreamResponse();
 }

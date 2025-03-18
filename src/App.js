@@ -1,21 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import Header from "./components/Header";
 import { useChat } from "@ai-sdk/react";
 
+/**
+ * App component serves as the main entry point for the chat application.
+ *
+ * It integrates the Header component, displays the chat messages, and provides
+ * an input field for users to send messages.
+ *
+ * The `useChat` hook is used to manage chat state and handle interactions with the API.
+ */
 function App() {
-  // const { messages, input, handleInputChange, handleSubmit, isLoading } =
-  //   useChat({
-  //     api: "/api/groq",
-  //   });
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: "/api/groq",
+    api: "/api/groq", // API endpoint for handling chat messages
   });
 
   return (
     <div className="App">
+      {/* Header component displays the application title */}
       <Header />
+
       <main className="main-content">
+        {/* Message list section */}
         <div className="message-list">
           {messages.length === 0 ? (
             <div className="empty-state">
@@ -35,6 +42,7 @@ function App() {
           )}
         </div>
 
+        {/* Chat box section for user input */}
         <div className="chat-box">
           <form onSubmit={handleSubmit}>
             <input
@@ -42,15 +50,15 @@ function App() {
               value={input}
               onChange={handleInputChange}
               placeholder="Type your message..."
-              // disabled={isLoading}
+              // disabled={isLoading} // Uncomment if loading state is implemented
               className="message-input"
             />
             <button
               type="submit"
-              // disabled={isLoading || !input.trim()}
+              // disabled={isLoading || !input.trim()} // Uncomment if loading state is implemented
               className="send-button"
             >
-              {/* {isLoading ? "Sending..." : "Send"} */}
+              {/* {isLoading ? "Sending..." : "Send"} // Uncomment if loading state is implemented */}
               Send
             </button>
           </form>
