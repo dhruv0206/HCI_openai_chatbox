@@ -1,4 +1,5 @@
-import { GroqStream } from "@ai-sdk/groq";
+// api/groq.js - Corrected implementation using Groq SDK
+import { groq } from "@ai-sdk/groq";
 import { StreamingTextResponse } from "ai";
 
 export default async function handler(req, res) {
@@ -23,17 +24,18 @@ export default async function handler(req, res) {
       });
     }
 
-    // Log for debugging (remove in production)
-    console.log("Using messages format:", JSON.stringify(messages));
+    // Format messages correctly
+    const formattedMessages = messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
 
-    // Create the Groq completion stream
-    const stream = await GroqStream({
+    // Create a stream using the correct Groq SDK syntax
+    const stream = await groq.chat.completions.create({
       model: "llama3-8b-8192",
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-      apiKey,
+      messages: formattedMessages,
+      stream: true,
+      api_key: apiKey,
     });
 
     // Return a streaming response
