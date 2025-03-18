@@ -44,7 +44,12 @@ To run the project locally:
 1. Clone the repository.
 2. Install dependencies using `npm install`.
 3. Install Vercel CLI globally using `npm install -g vercel`.
-4. Start the development server with `npm start`.
-5. For testing the app as deployed, use the Vercel CLI:
+4. Generate an API key from Groq and create a `.env.local` file in the root directory.
+   - Add the following line to the `.env.local` file:
+     ```
+     GROQ_API_KEY=your_api_key
+     ```
+5. Start the development server with `npm start`.
+6. For testing the app as deployed, use the Vercel CLI:
    - Run `vercel dev` to emulate the production environment locally.
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+7. Open [http://localhost:3000](http://localhost:3000) in your browser.
