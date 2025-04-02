@@ -10,6 +10,13 @@ function App() {
   //   });
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: "/api/groq",
+    initialMessages: [
+      {
+        id: "initial-groq-message",
+        role: "assistant",
+        content: "Hi from Groq",
+      },
+    ],
   });
 
   return (
