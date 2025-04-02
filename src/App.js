@@ -1,20 +1,85 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./components/Header";
+import MessageList from "./components/MessageList";
+import ChatBox from "./components/ChatBox";
 import { useChat } from "@ai-sdk/react";
+import { v4 as uuidv4 } from "uuid"; // You'll need to install this: npm install uuid
 
 /**
  * App component serves as the main entry point for the chat application.
- *
- * It integrates the Header component, displays the chat messages, and provides
- * an input field for users to send messages.
- *
- * The `useChat` hook is used to manage chat state and handle interactions with the API.
+ * Now includes an initial greeting message from the AI assistant.
  */
 function App() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  const {
+    messages: apiMessages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+  } = useChat({
     api: "/api/groq", // API endpoint for handling chat messages
   });
+
+  // State for our custom messages that will include the initial greeting
+  const [messages, setMessages] = useState([]);
+
+  // Initialize with a greeting message when the component mounts
+  useEffect(() => {
+    // Only add the initial message if there are no messages yet
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: uuidv4(),
+          text: "Hello World! How are you?",
+          sender: "assistant",
+        },
+      ]);
+    }
+  }, [messages.length]);
+
+  // Sync messages from the API
+  useEffect(() => {
+    if (apiMessages.length > 0) {
+      // Convert API messages to our format and append to our state
+      // But skip adding them if they're duplicates of what we already have
+      const newMessages = apiMessages.map((msg) => ({
+        id: msg.id,
+        text: msg.content,
+        sender: msg.role,
+      }));
+
+      // Filter out the initial message from our newMessages if it exists
+      const filteredNewMessages = newMessages.filter(
+        (newMsg) =>
+          !messages.some(
+            (existingMsg) =>
+              existingMsg.sender === "assistant" &&
+              existingMsg.text === "Hello World! How are you?"
+          )
+      );
+
+      if (filteredNewMessages.length > 0) {
+        setMessages((prev) => [...prev, ...filteredNewMessages]);
+      }
+    }
+  }, [apiMessages, messages]);
+
+  // Handle sending a message through the API
+  const sendMessage = (text) => {
+    if (text.trim()) {
+      // Add user message to our state
+      const userMessage = {
+        id: uuidv4(),
+        text: text,
+        sender: "user",
+      };
+      setMessages((prev) => [...prev, userMessage]);
+
+      // Submit to API
+      handleSubmit({ preventDefault: () => {} });
+    }
+  };
 
   return (
     <div className="App">
@@ -22,47 +87,16 @@ function App() {
       <Header />
 
       <main className="main-content">
-        {/* Message list section */}
-        <div className="message-list">
-          {messages.length === 0 ? (
-            <div className="empty-state">
-              <p>No messages yet. Start a conversation!</p>
-            </div>
-          ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={`message ${message.role}-message`}
-              >
-                <div className="message-content">
-                  <p>{message.content}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        {/* Message list component displays the chat history */}
+        <MessageList messages={messages} />
 
-        {/* Chat box section for user input */}
-        <div className="chat-box">
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Type your message..."
-              // disabled={isLoading} // Uncomment if loading state is implemented
-              className="message-input"
-            />
-            <button
-              type="submit"
-              // disabled={isLoading || !input.trim()} // Uncomment if loading state is implemented
-              className="send-button"
-            >
-              {/* {isLoading ? "Sending..." : "Send"} // Uncomment if loading state is implemented */}
-              Send
-            </button>
-          </form>
-        </div>
+        {/* Chat box component for user input */}
+        <ChatBox
+          onSendMessage={sendMessage}
+          value={input}
+          onChange={handleInputChange}
+          loading={isLoading}
+        />
       </main>
     </div>
   );
