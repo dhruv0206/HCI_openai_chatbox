@@ -14,7 +14,7 @@ function App() {
       {
         id: "initial-groq-message",
         role: "assistant",
-        content: "Hi from Groq",
+        content: "Hello World! How are you today?",
       },
     ],
   });
