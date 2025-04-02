@@ -1,20 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 
-/**
- * ChatBox component provides an input field for users to type and send messages.
- * Updated with a simplified design that matches the screenshot.
- *
- * @param {Function} onSendMessage - Callback function to handle sending a message.
- * @param {string} value - The current value of the input field.
- * @param {Function} onChange - Callback for input changes.
- * @param {boolean} loading - Indicates whether a message is currently being sent.
- */
-function ChatBox({ onSendMessage, value, onChange, loading }) {
+function ChatBox({ onSendMessage, loading }) {
+  const [message, setMessage] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (value.trim()) {
-      onSendMessage(value);
-    }
+    onSendMessage(message);
+    setMessage("");
   };
 
   return (
@@ -22,19 +14,18 @@ function ChatBox({ onSendMessage, value, onChange, loading }) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={value}
-          onChange={(e) => onChange(e)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
           disabled={loading}
           className="message-input"
-          aria-label="Message input"
         />
         <button
           type="submit"
-          disabled={loading || !value.trim()}
+          disabled={loading || !message.trim()}
           className="send-button"
         >
-          Send
+          {loading ? "Sending..." : "Send"}
         </button>
       </form>
     </div>
