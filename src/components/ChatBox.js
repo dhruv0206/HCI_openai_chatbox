@@ -12,7 +12,9 @@ import React from "react";
 function ChatBox({ onSendMessage, value, onChange, loading }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSendMessage(value);
+    if (value.trim()) {
+      onSendMessage(value);
+    }
   };
 
   return (
@@ -21,7 +23,7 @@ function ChatBox({ onSendMessage, value, onChange, loading }) {
         <input
           type="text"
           value={value}
-          onChange={onChange}
+          onChange={(e) => onChange(e)}
           placeholder="Type your message..."
           disabled={loading}
           className="message-input"
