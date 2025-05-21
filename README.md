@@ -61,3 +61,5 @@ Building the "Hello World API" chat app was both a challenge and a revelation. I
 This project opened my eyes to AI’s potential—think personalized tutoring, customer service bots, or even mental health tools. I faced hurdles like Vercel deployment, but overcoming them boosted my confidence and sparked ideas for future exploration, like adding sentiment analysis or voice input.
 
 Thank you, Professor, for this assignment—it built on my skills and inspired me to see AI as a gateway to innovation.
+
+This was a great opportunity.
